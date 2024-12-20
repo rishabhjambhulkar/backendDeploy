@@ -1,11 +1,16 @@
 import mongoose from 'mongoose';
 import app from './app.js';  // Import the Express application from app.js
+import dotenv from 'dotenv';
+dotenv.config();
 
 const port = 4000;
-
+console.log(process.env.DB)
+const uri = process.env.DB
 // Connect to MongoDB (replace with your MongoDB URI)
 mongoose
-    .connect('mongodb+srv://rj:rj@cluster0.txxbktr.mongodb.net/backenddeploy', {})
+.connect(uri, {
+
+  })
     .then(() => {
         console.log('Connected to MongoDB');
         // Start the server after MongoDB connection
