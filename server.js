@@ -3,7 +3,7 @@ import app from './app.js';  // Import the Express application from app.js
 import dotenv from 'dotenv';
 dotenv.config();
 
-const port = 4000;
+const port = 8000;
 console.log(process.env.DB)
 const uri = process.env.DB
 // Connect to MongoDB (replace with your MongoDB URI)
