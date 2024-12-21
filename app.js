@@ -8,5 +8,8 @@ app.use(express.json());
 
 // Use routes
 app.use('/api', router);
+app.get('/', (req, res) => {
+    res.send(' Service Started');
+});
 
 export default app;

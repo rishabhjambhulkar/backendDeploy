@@ -14,9 +14,6 @@ import { addAddress, getUserAddresses, updateAddress, deleteAddress } from './sr
 
 const router = express.Router();
 // Simple route
-router.get('/', (req, res) => {
-    res.send('Core Service Started');
-});
 
 
 
