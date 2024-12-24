@@ -1,32 +1,69 @@
 # This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
 
-name: Node.js CI
+name: Docker Compose
 
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 
 jobs:
-  build:
-
-    runs-on: self-hosted
-
-    strategy:
-      matrix:
-        node-version: [19.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+  deploy:
+    runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
+    # Step 1: Checkout the code
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # Step 2: Set up SSH agent
+    - name: Setup SSH Agent
+      uses: webfactory/ssh-agent@v0.8.1
       with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - run: npm ci
-    - run: npm run build --if-present
-    - run: pm2 restart server
+        ssh-private-key: ${{ secrets.EC2_SSH_KEY }} # Add your private SSH key to GitHub Secrets
+
+    # Step 3: Copy files to EC2 instance
+    - name: Copy files to EC2
+      run: |
+        scp -r . ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/app
+
+    # Step 4: SSH into EC2 and run Docker Compose
+    - name: Deploy with Docker Compose
+      run: |
+        ssh ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
+          cd /home/ubuntu/app
+          docker-compose down       # Stop existing containers if running
+          docker-compose up --build -d # Build and start containers
+        EOF
+
+
+
+# name: Node.js CI
+
+# on:
+#   push:
+#     branches: [ "main" ]
+#   pull_request:
+#     branches: [ "main" ]
+
+# jobs:
+#   build:
+
+#     runs-on: self-hosted
+
+#     strategy:
+#       matrix:
+#         node-version: [19.x]
+#         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+#     steps:
+#     - uses: actions/checkout@v4
+#     - name: Use Node.js ${{ matrix.node-version }}
+#       uses: actions/setup-node@v4
+#       with:
+#         node-version: ${{ matrix.node-version }}
+#         cache: 'npm'
+#     - run: npm ci
+#     - run: npm run build --if-present
+#     - run: pm2 restart server
    
