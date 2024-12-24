@@ -18,9 +18,10 @@ jobs:
 
     # Step 2: Set up SSH agent
     - name: Setup SSH Agent
-      uses: webfactory/ssh-agent@v0.8.1
+      uses: webfactory/ssh-agent@v0.5.3
       with:
-        ssh-private-key: ${{ secrets.EC2_SSH_KEY }} # Add your private SSH key to GitHub Secrets
+        ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+
 
     # Step 3: Copy files to EC2 instance
     - name: Copy files to EC2
