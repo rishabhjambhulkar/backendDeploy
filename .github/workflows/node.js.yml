@@ -22,7 +22,9 @@ jobs:
       with:
         ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
 
-
+    - name: Add EC2 host key
+      run: |
+        ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
     # Step 3: Copy files to EC2 instance
     - name: Copy files to EC2
       run: |
